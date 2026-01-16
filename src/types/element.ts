@@ -23,7 +23,7 @@ export interface PeriodicElement {
   melt: number | null;
   number: number;
   period: number;
-  group: number;
+  group: number | null;
   phase: string;
   source: string;
   spectral_img: string | null;
