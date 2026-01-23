@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useMemo } from 'react'
 import { PeriodicTable } from './components/PeriodicTable'
 import { ElementDetail } from './components/ElementDetail'
+import { Quiz } from './components/Quiz'
 import { PeriodicElement } from './types/element'
-import { Search, RotateCcw } from 'lucide-react'
+import { Search, RotateCcw, Play } from 'lucide-react'
 import { elements as originalElements } from './data/elements'
 
 const STORAGE_KEY = 'periodic-table-edits';
@@ -11,6 +12,7 @@ function App() {
   const [selectedElement, setSelectedElement] = useState<PeriodicElement | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [editedElements, setEditedElements] = useState<Record<number, PeriodicElement>>({});
+  const [showQuiz, setShowQuiz] = useState(false);
 
   // Load edited elements from localStorage on mount
   useEffect(() => {
@@ -70,8 +72,16 @@ function App() {
           원소를 클릭하여 상세 정보를 확인하고 편집할 수 있습니다. 화학의 기초를 다져보세요.
         </p>
         
-        {Object.keys(editedElements).length > 0 && (
-          <div className="flex justify-center mb-4">
+        <div className="flex justify-center gap-4 mb-4 flex-wrap">
+          <button
+            onClick={() => setShowQuiz(true)}
+            className="flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors font-medium shadow-lg"
+          >
+            <Play className="w-5 h-5" />
+            퀴즈 시작
+          </button>
+          
+          {Object.keys(editedElements).length > 0 && (
             <button
               onClick={handleResetEdits}
               className="flex items-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors text-sm font-medium"
@@ -79,8 +89,8 @@ function App() {
               <RotateCcw className="w-4 h-4" />
               편집 내용 초기화 ({Object.keys(editedElements).length}개 편집됨)
             </button>
-          </div>
-        )}
+          )}
+        </div>
 
         <div className="max-w-md mx-auto relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" />
@@ -131,6 +141,13 @@ function App() {
         onClose={() => setSelectedElement(null)}
         onUpdate={handleElementUpdate}
       />
+
+      {showQuiz && (
+        <Quiz 
+          elements={elements}
+          onClose={() => setShowQuiz(false)}
+        />
+      )}
 
       <footer className="mt-20 pb-10 text-center text-slate-400 text-sm">
         <p>© 2026 주기율표 학습 사이트. All rights reserved.</p>
